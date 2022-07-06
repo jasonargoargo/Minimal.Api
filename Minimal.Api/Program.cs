@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IDataAccess, SqlDataAccess>();
-builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddSingleton<IBookService, BookService>();
 
 var app = builder.Build();
 
@@ -26,6 +26,8 @@ app.MapPost("books", async (Book book, IBookService bookService) =>
         return Results.BadRequest(e.Message);
     }
 });
+
+app.MapGet("/", () => "Test to show the API routing works");
 
 app.UseHttpsRedirection();
 
