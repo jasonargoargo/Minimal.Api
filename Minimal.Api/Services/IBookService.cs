@@ -4,11 +4,11 @@ namespace Minimal.Api.Services
 {
     public interface IBookService
     {
-        public Task CreateAsync(Book book);
-        public Task<Book?> GetByIsbnAsync(string isbn);
-        public Task<IEnumerable<Book>> GetAllAsync();
-        public Task<IEnumerable<Book>> SearchByTitleAsync(string searchTerm);
-        public Task UpdateAsync(Book book);
-        public Task DeleteAsync(string isbn);
+        public Task<bool> CreateAsync(Book book);
+        public Task<BookDisplay?> GetByIsbnAsync(string isbn);
+        public Task<IEnumerable<BookDisplay>> GetAllAsync();
+        public Task<IEnumerable<BookDisplay>> SearchByTitleAsync(string searchTerm);
+        public Task<bool> UpdateAsync(Book book);
+        public Task<bool> DeleteAsync(string isbn);
     }
 }

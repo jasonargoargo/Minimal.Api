@@ -13,8 +13,14 @@ namespace Minimal.Api.Services
             this.dataAccess = dataAccess;
         }
 
-        public async Task CreateAsync(Book book)
+        public async Task<bool> CreateAsync(Book book)
         {
+            var existingBook = await GetByIsbnAsync(book.Isbn);
+            if (existingBook is null)
+            {
+                return false;
+            }
+
             var parms = new
             {
                 Isbn = book.Isbn,
@@ -28,31 +34,51 @@ namespace Minimal.Api.Services
             dynParms.Add("@Id", dbType: System.Data.DbType.Int32, direction: System.Data.ParameterDirection.Output);
             await dataAccess.SaveData("dbo.spCreateAsync", dynParms);
             book.Id = dynParms.Get<int>("Id");
+
+            return true;
         }
 
-        public Task DeleteAsync(string isbn)
+        public async Task<bool> DeleteAsync(string isbn)
         {
-            throw new NotImplementedException();
+            await dataAccess.SaveData("dbo.spUpdateAsync", new {Isbn = isbn});
+            return true;
         }
 
-        public Task<IEnumerable<Book>> GetAllAsync()
+        public async Task<IEnumerable<BookDisplay>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await dataAccess.LoadAllData<BookDisplay, dynamic>("dbo.spGetAllAsync", new { });
         }
 
-        public Task<Book?> GetByIsbnAsync(string isbn)
+        public async Task<BookDisplay?> GetByIsbnAsync(string isbn)
         {
-            throw new NotImplementedException();
+            return await dataAccess.LoadData<BookDisplay, dynamic>("dbo.spGetByIsbnAsync", new { Isbn = isbn });
         }
 
-        public Task<IEnumerable<Book>> SearchByTitleAsync(string searchTerm)
+        public async Task<IEnumerable<BookDisplay>> SearchByTitleAsync(string searchTerm)
         {
-            throw new NotImplementedException();
+            return await dataAccess.LoadAllData<BookDisplay, dynamic>("dbo.spSearchByTitleAsync", new { SearchTerm = searchTerm });
         }
 
-        public Task UpdateAsync(Book book)
+        public async Task<bool> UpdateAsync(Book book)
         {
-            throw new NotImplementedException();
+            var existingBook = await GetByIsbnAsync(book.Isbn);
+            if(existingBook is null)
+            {
+                return false;
+            }
+
+            var parms = new BookDisplay
+            {
+                Isbn = book.Isbn,
+                Title = book.Title,
+                Author = book.Author,
+                ShortDescription = book.ShortDescription,
+                PageCount = book.PageCount,
+                ReleaseDate = book.ReleaseDate
+            };
+
+            await dataAccess.SaveData("dbo.spUpdateAsync", parms);
+            return true;
         }
     }
 }

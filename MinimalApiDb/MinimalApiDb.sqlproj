@@ -66,5 +66,10 @@
   <ItemGroup>
     <Build Include="dbo\Tables\Books.sql" />
     <Build Include="dbo\StoredProcedures\spCreateAsync.sql" />
+    <Build Include="dbo\StoredProcedures\spGetAllAsync.sql" />
+    <Build Include="dbo\StoredProcedures\spGetByIsbnAsync.sql" />
+    <Build Include="dbo\StoredProcedures\spSearchByTitleAsync.sql" />
+    <Build Include="dbo\StoredProcedures\spUpdateAsync.sql" />
+    <Build Include="dbo\StoredProcedures\spDeleteAsync.sql" />
   </ItemGroup>
 </Project>
